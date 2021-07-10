@@ -1,0 +1,50 @@
+{
+    "name": "rockbuzz/lara-orders",
+    "description": "Abstraction for order implementation",
+    "keywords": [
+        "orders"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tiago Lopes",
+            "email": "tiago@rockbuzz.com.br"
+        },
+        {
+            "name": "Paulo Henrique",
+            "email": "paulo@rockbuzz.com.br"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rockbuzz\\LaraOrders\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "bensampo/laravel-enum": "^3.3",
+        "spatie/laravel-schemaless-attributes": "^1.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "orchestra/testbench": "^6.0",
+        "squizlabs/php_codesniffer": "^3.0",
+        "laravel/legacy-factories": "^1.0.4"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "cs": "vendor/bin/phpcs"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rockbuzz\\LaraOrders\\ServiceProvider"
+            ]
+        }
+    }
+}
