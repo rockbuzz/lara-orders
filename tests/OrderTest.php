@@ -40,8 +40,9 @@ class OrderTest extends TestCase
     public function order_fillable()
     {
         $expected = [
+            'uuid',
             'status',
-            'metadata',
+            'notes',
             'buyer_id',
             'buyer_type'
         ];
@@ -55,7 +56,7 @@ class OrderTest extends TestCase
         $expected = [
             'id' => 'integer',
             'status' => 'integer',
-            'metadata' => 'array',
+            'notes' => 'array',
             'deleted_at' => 'datetime'
         ];
 

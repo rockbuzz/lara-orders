@@ -15,8 +15,9 @@ class CreateOrdersTables extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable();
             $table->smallInteger('status')->default(1);
-            $table->json('metadata')->nullable();
+            $table->json('notes')->nullable();
             $table->morphs('buyer');
             $table->timestamps();
             $table->softDeletes();
@@ -27,7 +28,7 @@ class CreateOrdersTables extends Migration
             $table->string('description');
             $table->smallInteger('amount');
             $table->smallInteger('quantity')->default(1);
-            $table->json('metadata')->nullable();
+            $table->json('options')->nullable();
             $table->morphs('buyable');
             $table->foreignId('order_id')->constrained();
             $table->timestamps();

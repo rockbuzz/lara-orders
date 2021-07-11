@@ -14,10 +14,10 @@ trait HasOrder
         return $this->morphMany(Order::class, 'buyer');
     }
 
-    public function createOrder(?array $metadata = null): Order
+    public function createOrder(?array $notes = null): Order
     {
         return $this->orders()->create([
-            'metadata' => $metadata
+            'notes' => $notes
         ]);
     }
 

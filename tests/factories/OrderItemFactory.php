@@ -12,7 +12,7 @@ $factory->define(OrderItem::class, function (Faker $faker) {
         'description' => $faker->sentence,
         'amount' => $faker->numberBetween(1990, 3999),
         'quantity' => $faker->numberBetween(1, 3),
-        'metadata' => null,
+        'options' => null,
         'buyable_id' => $product->id,
         'buyable_type' => Product::class,
         'order_id' => factory(Order::class)->create()

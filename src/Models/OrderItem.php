@@ -15,7 +15,7 @@ class OrderItem extends Model
         'description',
         'amount',
         'quantity',
-        'metadata',
+        'options',
         'buyable_id',
         'buyable_type',
         'order_id'
@@ -25,7 +25,7 @@ class OrderItem extends Model
         'id' => 'integer',
         'amount' => 'integer',
         'quantity' => 'integer',
-        'metadata' => 'array'
+        'options' => 'array'
     ];
 
     protected $dates = [
@@ -35,12 +35,12 @@ class OrderItem extends Model
     ];
 
     protected $schemalessAttributes = [
-        'metadata'
+        'options'
     ];
 
-    public function scopeWithMetadataAttributes(): Builder
+    public function scopeWithOptionsAttributes(): Builder
     {
-        return SchemalessAttributes::scopeWithSchemalessAttributes('metadata');
+        return SchemalessAttributes::scopeWithSchemalessAttributes('options');
     }
 
     public function buyable()

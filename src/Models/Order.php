@@ -13,8 +13,9 @@ class Order extends Model
     use SoftDeletes, SchemalessAttributesTrait, HasSchemalessAttributes;
 
     protected $fillable = [
+        'uuid',
         'status',
-        'metadata',
+        'notes',
         'buyer_id',
         'buyer_type'
     ];
@@ -22,7 +23,7 @@ class Order extends Model
     protected $casts = [
         'id' => 'integer',
         'status' => 'integer',
-        'metadata' => 'array'
+        'notes' => 'array'
     ];
 
     protected $dates = [
@@ -32,16 +33,16 @@ class Order extends Model
     ];
 
     protected $schemalessAttributes = [
-        'metadata'
+        'notes'
     ];
 
     protected $dispatchesEvents = [
         'created' => OrderCreated::class
     ];
 
-    public function scopeWithMetadataAttributes(): Builder
+    public function scopeWithNotesAttributes(): Builder
     {
-        return SchemalessAttributes::scopeWithSchemalessAttributes('metadata');
+        return SchemalessAttributes::scopeWithSchemalessAttributes('notes');
     }
     
     public function buyer(): BelongsTo

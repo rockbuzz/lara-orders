@@ -42,7 +42,7 @@ class OrderItemTest extends TestCase
             'description',
             'amount',
             'quantity',
-            'metadata',
+            'options',
             'buyable_id',
             'buyable_type',
             'order_id'
@@ -58,7 +58,7 @@ class OrderItemTest extends TestCase
             'id' => 'integer',
             'amount' => 'integer',
             'quantity' => 'integer',
-            'metadata' => 'array',
+            'options' => 'array',
             'deleted_at' => 'datetime'
         ];
 
