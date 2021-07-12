@@ -2,12 +2,13 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Rockbuzz\LaraOrders\Events\OrderTransactionCreated;
 
 class OrderTransaction extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Uuid;
 
     protected $fillable = [
         'payload',

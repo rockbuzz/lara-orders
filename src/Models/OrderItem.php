@@ -2,11 +2,12 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class OrderItem extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Uuid;
 
     protected $fillable = [
         'description',

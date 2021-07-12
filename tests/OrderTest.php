@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Tests\Models\User;
-use Rockbuzz\LaraUuid\Traits\UUid;
+use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
@@ -24,7 +24,8 @@ class OrderTest extends TestCase
     public function order_traits()
     {
         $expected = [
-            SoftDeletes::class
+            SoftDeletes::class,
+            Uuid::class
         ];
 
         $this->assertEquals(

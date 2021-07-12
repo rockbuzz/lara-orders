@@ -26,6 +26,7 @@ class CreateOrdersTables extends Migration
 
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid');
             $table->string('description');
             $table->smallInteger('amount');
             $table->smallInteger('quantity')->default(1);
@@ -39,6 +40,7 @@ class CreateOrdersTables extends Migration
 
         Schema::create('order_transactions', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid');
             $table->json('payload')->nullable();
             $table->foreignId('order_id')->constrained();
             $table->timestamps();
