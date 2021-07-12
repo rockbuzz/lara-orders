@@ -32,10 +32,6 @@ class OrderItem extends Model
         'updated_at'
     ];
 
-    protected $schemalessAttributes = [
-        'options'
-    ];
-
     public function buyable()
     {
         return $this->morphTo('buyable');

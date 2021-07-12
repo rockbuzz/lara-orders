@@ -26,10 +26,6 @@ class OrderTransaction extends Model
         'updated_at'
     ];
 
-    protected $schemalessAttributes = [
-        'payload'
-    ];
-
     protected $dispatchesEvents = [
         'created' => OrderTransactionCreated::class
     ];

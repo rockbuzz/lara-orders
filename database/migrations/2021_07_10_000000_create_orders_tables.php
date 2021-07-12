@@ -19,6 +19,7 @@ class CreateOrdersTables extends Migration
             $table->smallInteger('status')->default(1);
             $table->json('notes')->nullable();
             $table->morphs('buyer');
+            $table->foreignId('coupon_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['buyer_id', 'buyer_type', 'uuid']);
@@ -46,6 +47,21 @@ class CreateOrdersTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('order_coupons', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->string('name');
+            $table->smallInteger('type');
+            $table->smallInteger('value');
+            $table->smallInteger('usage_limit');
+            $table->boolean('active');
+            $table->json('notes')->nullable();
+            $table->dateTime('start_at');
+            $table->dateTime('end_at');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -55,6 +71,7 @@ class CreateOrdersTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('order_coupons');
         Schema::dropIfExists('order_transactions');
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');

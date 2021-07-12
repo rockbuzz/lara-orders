@@ -2,10 +2,10 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Rockbuzz\LaraOrders\Traits\Uuid;
 use Rockbuzz\LaraOrders\Events\OrderCreated;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Rockbuzz\LaraOrders\Traits\Uuid;
 
 class Order extends Model
 {
@@ -29,10 +29,6 @@ class Order extends Model
         'deleted_at',
         'created_at',
         'updated_at'
-    ];
-
-    protected $schemalessAttributes = [
-        'notes'
     ];
 
     protected $dispatchesEvents = [
