@@ -5,8 +5,6 @@ namespace Tests;
 use Tests\Models\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rockbuzz\LaraOrders\Traits\HasSchemalessAttributes;
-use Spatie\SchemalessAttributes\SchemalessAttributesTrait;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 use Rockbuzz\LaraOrders\Models\{OrderItem, Order, OrderTransaction};
 
@@ -25,9 +23,7 @@ class OrderTest extends TestCase
     public function order_traits()
     {
         $expected = [
-            SoftDeletes::class,
-            SchemalessAttributesTrait::class,
-            HasSchemalessAttributes::class
+            SoftDeletes::class
         ];
 
         $this->assertEquals(

@@ -2,15 +2,12 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Rockbuzz\LaraOrders\Events\OrderTransactionCreated;
-use Rockbuzz\LaraOrders\Traits\HasSchemalessAttributes;
-use Spatie\SchemalessAttributes\{SchemalessAttributes, SchemalessAttributesTrait};
 
 class OrderTransaction extends Model
 {
-    use SoftDeletes, SchemalessAttributesTrait, HasSchemalessAttributes;
+    use SoftDeletes;
 
     protected $fillable = [
         'payload',
@@ -35,11 +32,6 @@ class OrderTransaction extends Model
     protected $dispatchesEvents = [
         'created' => OrderTransactionCreated::class
     ];
-
-    public function scopeWithPayloadAttributes(): Builder
-    {
-        return SchemalessAttributes::scopeWithSchemalessAttributes('payload');
-    }
 
     public function order()
     {

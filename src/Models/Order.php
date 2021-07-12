@@ -3,14 +3,12 @@
 namespace Rockbuzz\LaraOrders\Models;
 
 use Rockbuzz\LaraOrders\Events\OrderCreated;
-use Rockbuzz\LaraOrders\Traits\HasSchemalessAttributes;
-use Illuminate\Database\Eloquent\{Builder, Model, SoftDeletes};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Spatie\SchemalessAttributes\{SchemalessAttributes, SchemalessAttributesTrait};
 
 class Order extends Model
 {
-    use SoftDeletes, SchemalessAttributesTrait, HasSchemalessAttributes;
+    use SoftDeletes;
 
     protected $fillable = [
         'uuid',
@@ -39,11 +37,6 @@ class Order extends Model
     protected $dispatchesEvents = [
         'created' => OrderCreated::class
     ];
-
-    public function scopeWithNotesAttributes(): Builder
-    {
-        return SchemalessAttributes::scopeWithSchemalessAttributes('notes');
-    }
     
     public function buyer(): BelongsTo
     {
