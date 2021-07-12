@@ -14,15 +14,23 @@ trait HasOrder
         return $this->morphMany(Order::class, 'buyer');
     }
 
-    public function createOrder(?array $notes = null): Order
+    public function createOrder(): Order
     {
-        return $this->orders()->create([
-            'notes' => $notes
-        ]);
+        return $this->orders()->create();
     }
 
-    public function findOrderById($id): ?Order
+    public function orderById(int $id): ?Order
     {
-        return $this->orders()->whereId($id)->first();
+        return $this->orderByIdentifier('id', $id);
+    }
+
+    public function orderByUuid(string $uuid): ?Order
+    {
+        return $this->orderByIdentifier('uuid', $uuid);
+    }
+
+    protected function orderByIdentifier(string $column, $value): ?Order
+    {
+        return $this->orders()->where($column, $value)->first();
     }
 }

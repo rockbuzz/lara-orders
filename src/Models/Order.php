@@ -2,6 +2,7 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Ramsey\Uuid\Uuid;
 use Rockbuzz\LaraOrders\Events\OrderCreated;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
@@ -51,5 +52,12 @@ class Order extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(OrderTransaction::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($order) {
+            $order->uuid ??= Uuid::uuid4();
+        });
     }
 }

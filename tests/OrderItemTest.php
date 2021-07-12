@@ -87,11 +87,28 @@ class OrderItemTest extends TestCase
     public function order_item_has_order()
     {
         $order = $this->create(Order::class);
-        $orderItem = $this->create(OrderItem::class, [
+        $item = $this->create(OrderItem::class, [
             'order_id' => $order->id
         ]);
 
-        $this->assertInstanceOf(BelongsTo::class, $orderItem->order());
-        $this->assertEquals($order->id, $orderItem->order->id);
+        $this->assertInstanceOf(BelongsTo::class, $item->order());
+        $this->assertEquals($order->id, $item->order->id);
+    }
+
+    /** @test */
+    public function must_throw_an_exception_when_item_already_exists()
+    {
+        $order = $this->create(Order::class);
+        $item = $this->create(OrderItem::class, [
+            'order_id' => $order->id
+        ]);
+
+        $this->expectException(\Illuminate\Database\QueryException::class);
+
+        $this->create(OrderItem::class, [
+            'order_id' => $order->id,
+            'buyable_id' => $item->buyable_id,
+            'buyable_type' => $item->buyable_type
+        ]);
     }
 }

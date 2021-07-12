@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Tests\Models\User;
+use Rockbuzz\LaraUuid\Traits\UUid;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};

@@ -15,12 +15,13 @@ class CreateOrdersTables extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->nullable();
+            $table->uuid('uuid');
             $table->smallInteger('status')->default(1);
             $table->json('notes')->nullable();
             $table->morphs('buyer');
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['buyer_id', 'buyer_type', 'uuid']);
         });
 
         Schema::create('order_items', function (Blueprint $table) {
@@ -33,8 +34,7 @@ class CreateOrdersTables extends Migration
             $table->foreignId('order_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->unique(['buyable_id', 'buyable_type', 'order_id']);
         });
 
         Schema::create('order_transactions', function (Blueprint $table) {
