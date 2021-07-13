@@ -9,6 +9,9 @@ class OrderCoupon extends Model
 {
     use SoftDeletes, Uuid;
 
+    const CURRENCY = 1;
+    const PERCENTAGE = 2;
+
     protected $fillable = [
         'uuid',
         'name',
@@ -23,6 +26,7 @@ class OrderCoupon extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'type' => 'integer',
         'active' => 'boolean',
         'notes' => 'array',
         'start_at' => 'datetime',
@@ -37,4 +41,14 @@ class OrderCoupon extends Model
         'start_at',
         'end_at'
     ];
+
+    public function isCurrency(): bool
+    {
+        return $this->type === static::CURRENCY;
+    }
+
+    public function isPercentage(): bool
+    {
+        return $this->type === static::PERCENTAGE;
+    }
 }

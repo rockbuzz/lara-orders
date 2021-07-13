@@ -86,6 +86,21 @@ class OrderItemTest extends TestCase
     }
 
     /** @test */
+    public function order_item_has_total()
+    {
+        $buyable = $this->create(Product::class);
+        $orderItem = $this->create(OrderItem::class, [
+            'buyable_id' => $buyable->id,
+            'buyable_type' => Product::class,
+            'quantity' => 2
+        ]);
+
+        $expected = $orderItem->amount * 2;
+
+        $this->assertEquals($expected, $orderItem->total);
+    }
+
+    /** @test */
     public function order_item_has_order()
     {
         $order = $this->create(Order::class);

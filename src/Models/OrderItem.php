@@ -41,4 +41,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function getTotalAttribute()
+    {
+        return $this->attributes['amount'] * $this->attributes['quantity'];
+    }
 }

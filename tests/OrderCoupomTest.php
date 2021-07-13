@@ -54,6 +54,7 @@ class OrderCoupomTest extends TestCase
     {
         $expected = [
             'id' => 'integer',
+            'type' => 'integer',
             'active' => 'boolean',
             'notes' => 'array',
             'start_at' => 'datetime',
@@ -71,5 +72,29 @@ class OrderCoupomTest extends TestCase
             array_values(['deleted_at', 'created_at', 'updated_at', 'start_at', 'end_at']),
             array_values($this->orderCoupon->getDates())
         );
+    }
+
+    /** @test */
+    public function coupon_is_currency()
+    {
+        $coupon = $this->create(OrderCoupon::class, ['type' => OrderCoupon::PERCENTAGE]);
+
+        $this->assertFalse($coupon->isCurrency());
+
+        $coupon->update(['type' => OrderCoupon::CURRENCY]);
+
+        $this->assertTrue($coupon->isCurrency());
+    }
+
+    /** @test */
+    public function coupon_is_percentage()
+    {
+        $coupon = $this->create(OrderCoupon::class, ['type' => OrderCoupon::CURRENCY]);
+
+        $this->assertFalse($coupon->isPercentage());
+
+        $coupon->update(['type' => OrderCoupon::PERCENTAGE]);
+
+        $this->assertTrue($coupon->isPercentage());
     }
 }

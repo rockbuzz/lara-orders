@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Rockbuzz\LaraOrders\Models\OrderCoupon;
 
 class CreateOrdersTables extends Migration
 {
@@ -52,13 +53,13 @@ class CreateOrdersTables extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->string('name');
-            $table->smallInteger('type');
+            $table->smallInteger('type')->default(OrderCoupon::CURRENCY);
             $table->smallInteger('value');
-            $table->smallInteger('usage_limit');
-            $table->boolean('active');
+            $table->smallInteger('usage_limit')->nullable();
+            $table->boolean('active')->default(true);
             $table->json('notes')->nullable();
-            $table->dateTime('start_at');
-            $table->dateTime('end_at');
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

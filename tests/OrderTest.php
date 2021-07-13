@@ -7,7 +7,7 @@ use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Rockbuzz\LaraOrders\Models\{OrderItem, Order, OrderTransaction};
+use Rockbuzz\LaraOrders\Models\{OrderItem, Order, OrderCoupon, OrderTransaction};
 
 class OrderTest extends TestCase
 {
@@ -93,6 +93,67 @@ class OrderTest extends TestCase
 
         $this->assertInstanceOf(HasMany::class, $order->items());
         $this->assertContains($item->id, $order->items->pluck('id'));
+    }
+
+    /** @test */
+    public function order_has_total_without_coupon()
+    {
+        $order = $this->create(Order::class);
+        [$item1, $item2] = $this->create(OrderItem::class, [
+            'order_id' => $order->id
+        ], 2);
+
+        $expected = $item1->total + $item2->total;
+
+        $this->assertEquals($expected, $order->total);
+    }
+
+    /** @test */
+    public function order_has_total_with_currency_coupon()
+    {
+        $coupon = $this->create(OrderCoupon::class, [
+            'type' => 1,
+            'value' => 1000
+        ]);
+
+        $order = $this->create(Order::class, ['coupon_id' => $coupon->id]);
+        [$item1, $item2] = $this->create(OrderItem::class, [
+            'order_id' => $order->id,
+            'amount' => 9899,
+            'quantity' => 1
+        ], 2);
+
+        $total = ($item1->total + $item2->total) / 100;
+
+        $discount = $coupon->value / 100;
+
+        $expected = $total - $discount;
+
+        $this->assertEquals($expected, $order->totalWithCoupon);
+    }
+
+    /** @test */
+    public function order_has_total_with_percentage_coupon()
+    {
+        $coupon = $this->create(OrderCoupon::class, [
+            'type' => 2,
+            'value' => 10
+        ]);
+
+        $order = $this->create(Order::class, ['coupon_id' => $coupon->id]);
+        [$item1, $item2] = $this->create(OrderItem::class, [
+            'order_id' => $order->id,
+            'amount' => 9899,
+            'quantity' => 1
+        ], 2);
+
+        $total = ($item1->total + $item2->total) / 100;
+
+        $discount = ($coupon->value / 100) * $total;
+
+        $expected = $total - $discount;
+
+        $this->assertEquals($expected, $order->totalWithCoupon);
     }
 
     /** @test */
