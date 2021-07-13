@@ -10,7 +10,7 @@ $factory->define(OrderCoupon::class, function (Faker $faker) {
     return [
         'uuid' => Uuid::uuid4(),
         'name' => $faker->word(),
-        'type' => $faker->numberBetween(1,2),
+        'type' => $faker->numberBetween(1, 2),
         'value' => $faker->numberBetween(1000, 10000),
         'usage_limit' => 1,
         'active' => $faker->boolean(),

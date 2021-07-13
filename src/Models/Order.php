@@ -57,7 +57,9 @@ class Order extends Model
 
     public function getTotalWithCouponAttribute()
     {
-        if (!$this->coupon) return $this->total;
+        if (!$this->coupon) {
+            return $this->total;
+        }
 
         $total = $this->total / 100;
 

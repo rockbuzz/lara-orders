@@ -39,14 +39,26 @@ class YourBuyer
 
 ```php
 $buyer->orders(): MorphMany;
-$buyer->createOrder(?array $metadata = null): Order;
-$buyer->findOrderById($id): ?Order;
+
+$buyer->createOrder(): Order;
+
+$buyer->orderById(int $id): ?Order;
+
+$buyer->orderByUuid(string $uuid): ?Order;
 ```
 
 ```php
 $order->buyer(): BelongsTo;
-$order->items(): HasMany
-$order->transactions(): HasMany
+
+$order->coupon(): BelongsTo;
+
+$order->items(): HasMany;
+
+$order->total;
+
+$order->totalWithCoupon;
+
+$order->transactions(): HasMany;
 ```
 - Events
 
