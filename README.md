@@ -29,6 +29,7 @@ Add the `HasOrder` trait to the template for which you will be ordering
 ```php
 use Rockbuzz\LaraOrders\Transaction;
 use Rockbuzz\LaraOrders\Models\Order;
+use Rockbuzz\LaraOrders\Models\OrderCoupon;
 use Rockbuzz\LaraOrders\Traits\HasOrder;
 
 class YourBuyer
@@ -52,6 +53,8 @@ $order->buyer(): BelongsTo;
 
 $order->coupon(): BelongsTo;
 
+$order->applyCoupon(OrderCoupon $coupon);
+
 $order->items(): HasMany;
 
 $order->total;
@@ -65,6 +68,7 @@ $order->transactions(): HasMany;
 ```php
 Rockbuzz\LaraOrders\Events\OrderCreated::class
 Rockbuzz\LaraOrders\Events\OrderTransactionCreated::class
+Rockbuzz\LaraOrders\Events\CouponApplied::class
 ```
 
 ## License

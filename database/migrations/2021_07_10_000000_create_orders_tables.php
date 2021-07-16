@@ -21,6 +21,7 @@ class CreateOrdersTables extends Migration
             $table->json('notes')->nullable();
             $table->morphs('buyer');
             $table->foreignId('coupon_id')->nullable()->constrained();
+            $table->smallInteger('discount')->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['buyer_id', 'buyer_type', 'uuid']);

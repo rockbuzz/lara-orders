@@ -51,4 +51,9 @@ class OrderCoupon extends Model
     {
         return $this->type === static::PERCENTAGE;
     }
+
+    public function isValid(): bool
+    {
+        return $this->active and $this->start_at->lte(now()) and $this->end_at->gte(now());
+    }
 }

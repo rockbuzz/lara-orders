@@ -2,8 +2,10 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use DomainException;
 use Rockbuzz\LaraOrders\Traits\Uuid;
 use Rockbuzz\LaraOrders\Events\OrderCreated;
+use Rockbuzz\LaraOrders\Events\CouponApplied;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
@@ -22,6 +24,7 @@ class Order extends Model
     protected $casts = [
         'id' => 'integer',
         'status' => 'integer',
+        'discount' => 'integer',
         'notes' => 'array'
     ];
 
@@ -40,14 +43,28 @@ class Order extends Model
         return $this->belongsTo(config('orders.models.buyer'));
     }
 
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(OrderCoupon::class);
     }
 
-    public function items(): HasMany
+    public function applyCoupon(OrderCoupon $coupon)
     {
-        return $this->hasMany(OrderItem::class);
+        if (!$this->couponIsValid($coupon)) {
+            throw new DomainException("Coupon exceeded usage limit");
+        }
+
+        $this->coupon_id = $coupon->id;
+        $this->discount = $this->convertToCents($this->calculateDiscount($this->total));
+
+        $this->save();
+
+        event(new CouponApplied($this, $coupon));
     }
 
     public function getTotalAttribute()
@@ -55,15 +72,9 @@ class Order extends Model
         return $this->items->reduce(fn($acc, $item) => $acc += $item->total);
     }
 
-    public function getTotalWithCouponAttribute()
+    public function getTotalWithDiscountAttribute()
     {
-        if (!$this->coupon) {
-            return $this->total;
-        }
-
-        $total = $this->total / 100;
-
-        return $total - $this->resolveDiscount($total);
+        return $this->total - $this->discount;
     }
 
     public function transactions(): HasMany
@@ -71,12 +82,28 @@ class Order extends Model
         return $this->hasMany(OrderTransaction::class);
     }
 
-    protected function resolveDiscount($total)
+    protected function calculateDiscount($total)
     {
         if ($this->coupon->isPercentage()) {
             return ($this->coupon->value / 100) * $total;
         }
 
         return $this->coupon->value / 100;
+    }
+
+    protected function convertToCents(int $value)
+    {
+        return intval($value * 100);
+    }
+
+    private function couponIsValid(OrderCoupon $coupon)
+    {
+        return $this->couponHasAvailableLimit($coupon) and $this->items()->count('id');
+    }
+
+    private function couponHasAvailableLimit(OrderCoupon $coupon)
+    {
+        return is_null($coupon->usage_limit) 
+            or $coupon->usage_limit > static::where('coupon_id', $coupon->id)->count('id');
     }
 }

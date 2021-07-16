@@ -97,4 +97,48 @@ class OrderCoupomTest extends TestCase
 
         $this->assertTrue($coupon->isPercentage());
     }
+
+    /** @test */
+    public function coupon_is_invalid_when_inactive()
+    {
+        $coupon = $this->create(OrderCoupon::class, [
+            'start_at' => now()->subMinute(),
+            'end_at' => now()->addMinute(),
+            'active' => false
+        ]);
+
+        $this->assertFalse($coupon->isValid());
+    }
+
+    /** @test */
+    public function coupon_is_invalid_when_out_of_date_use()
+    {
+        $coupon = $this->create(OrderCoupon::class, [
+            'start_at' => now()->addMinute(),
+            'end_at' => now()->addMinute(),
+            'active' => true
+        ]);
+
+        $this->assertFalse($coupon->isValid());
+
+        $coupon = $this->create(OrderCoupon::class, [
+            'start_at' => now()->subMinute(),
+            'end_at' => now()->subMinute(),
+            'active' => true
+        ]);
+
+        $this->assertFalse($coupon->isValid());
+    }
+
+    /** @test */
+    public function coupon_is_valid()
+    {
+        $coupon = $this->create(OrderCoupon::class, [
+            'start_at' => now()->subMinute(),
+            'end_at' => now()->addMinute(),
+            'active' => true
+        ]);
+
+        $this->assertTrue($coupon->isValid());
+    }
 }
