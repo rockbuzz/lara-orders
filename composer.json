@@ -18,7 +18,10 @@
     "autoload": {
         "psr-4": {
             "Rockbuzz\\LaraOrders\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -26,8 +29,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
-        "mattiasgeniar/php-percentages": "^1.3"
+        "php": ">=7.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",

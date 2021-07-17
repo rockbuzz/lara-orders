@@ -63,7 +63,7 @@ class Order extends Model
 
         $this->discountIsLessThanTotalOrFail($discount);
         
-        $this->discount = $this->convertToCents($discount);
+        $this->discount = intval($discount * 100);
         $this->save();
 
         event(new CouponApplied($this, $coupon));
@@ -101,11 +101,6 @@ class Order extends Model
         }
 
         return $this->coupon->value / 100;
-    }
-
-    protected function convertToCents($value)
-    {
-        return intval($value * 100);
     }
 
     protected function isValidOrFail(OrderCoupon $coupon)
