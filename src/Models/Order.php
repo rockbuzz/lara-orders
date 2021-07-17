@@ -56,12 +56,22 @@ class Order extends Model
     public function applyCoupon(OrderCoupon $coupon)
     {
         if (!$this->couponIsValid($coupon)) {
-            throw new DomainException("Coupon exceeded usage limit");
+            throw new DomainException('Coupon exceeded usage limit');
+        }
+
+        if ($this->items->isEmpty()) {
+            throw new DomainException('Order is empty');
         }
 
         $this->coupon_id = $coupon->id;
-        $this->discount = $this->convertToCents($this->calculateDiscount($this->total));
 
+        $discount = $this->convertToCents($this->calculateDiscount($this->total));
+
+        if ($this->total < $discount) {
+            throw new DomainException('Discount is greater than total');
+        }
+        
+        $this->discount = $discount;
         $this->save();
 
         event(new CouponApplied($this, $coupon));
@@ -85,25 +95,30 @@ class Order extends Model
     protected function calculateDiscount($total)
     {
         if ($this->coupon->isPercentage()) {
-            return ($this->coupon->value / 100) * $total;
+            return percentage($this->coupon->value, $this->deconvertCents($total));
         }
 
         return $this->coupon->value / 100;
     }
 
-    protected function convertToCents(int $value)
+    protected function convertToCents($value)
     {
         return intval($value * 100);
     }
 
+    protected function deconvertCents(int $value)
+    {
+        return number_format($value / 100, 2, '.', '');
+    }
+
     private function couponIsValid(OrderCoupon $coupon)
     {
-        return $this->couponHasAvailableLimit($coupon) and $this->items()->count('id');
+        return $this->couponHasAvailableLimit($coupon);
     }
 
     private function couponHasAvailableLimit(OrderCoupon $coupon)
     {
-        return is_null($coupon->usage_limit) 
+        return is_null($coupon->usage_limit)
             or $coupon->usage_limit > static::where('coupon_id', $coupon->id)->count('id');
     }
 }

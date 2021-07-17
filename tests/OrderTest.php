@@ -117,12 +117,13 @@ class OrderTest extends TestCase
         Event::fake(CouponApplied::class);
 
         $coupon = $this->create(
-            OrderCoupon::class, [
+            OrderCoupon::class,
+            [
                 'start_at' => now()->subMinute(),
                 'end_at' => now()->addMinute(),
                 'active' => true,
                 'usage_limit' => null,
-                'type' => OrderCoupon::CURRENCY, 
+                'type' => OrderCoupon::CURRENCY,
                 'value' => 1000
             ]
         );
@@ -146,21 +147,23 @@ class OrderTest extends TestCase
     public function must_return_an_exception_when_coupon_exceeded_usage_limit()
     {
         $coupon = $this->create(
-            OrderCoupon::class, [
+            OrderCoupon::class,
+            [
                 'start_at' => now()->subMinute(),
                 'end_at' => now()->addMinute(),
                 'active' => true,
                 'usage_limit' => 1,
-                'type' => OrderCoupon::CURRENCY, 
+                'type' => OrderCoupon::CURRENCY,
                 'value' => 1000
             ]
         );
-        $this->create(Order::class, ['coupon_id' => $coupon->id]);        
+        $this->create(Order::class, ['coupon_id' => $coupon->id]);
 
         $order = $this->create(Order::class);
         $this->create(OrderItem::class, ['order_id' => $order->id]);
 
         $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Coupon exceeded usage limit');
 
         $order->applyCoupon($coupon);
     }
@@ -169,18 +172,47 @@ class OrderTest extends TestCase
     public function must_return_an_exception_when_order_is_empty()
     {
         $coupon = $this->create(
-            OrderCoupon::class, [
+            OrderCoupon::class,
+            [
                 'start_at' => now()->subMinute(),
                 'end_at' => now()->addMinute(),
                 'active' => true,
-                'usage_limit' => 1,
-                'type' => OrderCoupon::CURRENCY, 
+                'usage_limit' => null,
+                'type' => OrderCoupon::CURRENCY,
                 'value' => 1000
             ]
         );
         $order = $this->create(Order::class);
 
         $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Order is empty');
+
+        $order->applyCoupon($coupon);
+    }
+
+    /** @test */
+    public function must_return_an_exception_when_discount_is_greater_than_total()
+    {
+        $coupon = $this->create(
+            OrderCoupon::class,
+            [
+                'start_at' => now()->subMinute(),
+                'end_at' => now()->addMinute(),
+                'active' => true,
+                'usage_limit' => 1,
+                'type' => OrderCoupon::CURRENCY,
+                'value' => 10100
+            ]
+        );
+        $order = $this->create(Order::class);
+        $this->create(OrderItem::class, [
+            'order_id' => $order->id,
+            'amount' => 10000,
+            'quantity' => 1
+        ]);
+
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Discount is greater than total');
 
         $order->applyCoupon($coupon);
     }
@@ -246,11 +278,11 @@ class OrderTest extends TestCase
             'end_at' => now()->addMinute(),
             'active' => true,
             'usage_limit' => null,
-            'type' => 2,
+            'type' => OrderCoupon::PERCENTAGE,
             'value' => 10
         ]);
 
-        $order = $this->create(Order::class, ['coupon_id' => $coupon->id]);
+        $order = $this->create(Order::class);
         $this->create(OrderItem::class, [
             'order_id' => $order->id,
             'amount' => 9899,
