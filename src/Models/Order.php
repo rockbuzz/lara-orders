@@ -111,12 +111,12 @@ class Order extends Model
     protected function isValidOrFail(OrderCoupon $coupon)
     {
         throw_unless(
-            $this->couponHasAvailableLimit($coupon), 
+            $this->couponHasAvailableLimit($coupon),
             new DomainException('Coupon exceeded usage limit')
         );
 
         throw_if(
-            $this->items->isEmpty(), 
+            $this->items->isEmpty(),
             new DomainException('Order is empty')
         );
     }
@@ -124,7 +124,7 @@ class Order extends Model
     protected function discountIsLessThanTotalOrFail($discount)
     {
         throw_if(
-            $this->total < $discount, 
+            $this->total < $discount,
             new DomainException('Discount is greater than total')
         );
     }
