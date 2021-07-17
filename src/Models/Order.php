@@ -56,14 +56,9 @@ class Order extends Model
     public function applyCoupon(OrderCoupon $coupon)
     {
         $this->isValidOrFail($coupon);
-
-        $this->coupon_id = $coupon->id;
-
-        $discount = $this->calculateDiscount();
-
-        $this->discountIsLessThanTotalOrFail($discount);
         
-        $this->discount = intval($discount * 100);
+        $this->discount = convert_to_cents(calculate_discount($coupon, $this->total));
+        $this->coupon_id = $coupon->id;
         $this->save();
 
         event(new CouponApplied($this, $coupon));
@@ -71,7 +66,7 @@ class Order extends Model
 
     public function getTotalAttribute()
     {
-        return number_format($this->totalInCents / 100, 2, '.', '');
+        return value_format($this->totalInCents);
     }
 
     public function getTotalInCentsAttribute()
@@ -81,7 +76,7 @@ class Order extends Model
 
     public function getTotalWithDiscountAttribute()
     {
-        return number_format($this->totalWithDiscountInCents / 100, 2, '.', '');
+        return value_format($this->totalWithDiscountInCents);
     }
 
     public function getTotalWithDiscountInCentsAttribute()
@@ -114,19 +109,21 @@ class Order extends Model
             $this->items->isEmpty(),
             new DomainException('Order is empty')
         );
-    }
-
-    protected function discountIsLessThanTotalOrFail($discount)
-    {
+        
         throw_if(
-            $this->total < $discount,
+            $this->discountIsGreaterThanTotal($coupon),
             new DomainException('Discount is greater than total')
         );
     }
 
-    private function couponHasAvailableLimit(OrderCoupon $coupon)
+    protected function couponHasAvailableLimit(OrderCoupon $coupon)
     {
-        return is_null($coupon->usage_limit)
+        return $coupon->isUnlimited()
             or $coupon->usage_limit > static::where('coupon_id', $coupon->id)->count('id');
+    }
+
+    protected function discountIsGreaterThanTotal($coupon)
+    {
+        return calculate_discount($coupon, $this->total) > $this->total;
     }
 }

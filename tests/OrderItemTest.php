@@ -95,7 +95,7 @@ class OrderItemTest extends TestCase
             'quantity' => 2
         ]);
 
-        $expected = number_format($orderItem->totalInCents / 100, 2, '.', '');
+        $expected = $orderItem->total;
 
         $this->assertEquals($expected, $orderItem->total);
     }

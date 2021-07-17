@@ -99,7 +99,7 @@ class OrderCoupomTest extends TestCase
     }
 
     /** @test */
-    public function coupon_is_invalid_when_inactive()
+    public function coupon_unavaiable_when_inactive()
     {
         $coupon = $this->create(OrderCoupon::class, [
             'start_at' => now()->subMinute(),
@@ -107,11 +107,11 @@ class OrderCoupomTest extends TestCase
             'active' => false
         ]);
 
-        $this->assertFalse($coupon->isValid());
+        $this->assertFalse($coupon->isAvailable());
     }
 
     /** @test */
-    public function coupon_is_invalid_when_out_of_date_use()
+    public function coupon_unavaiable_when_out_of_date_use()
     {
         $coupon = $this->create(OrderCoupon::class, [
             'start_at' => now()->addMinute(),
@@ -119,7 +119,7 @@ class OrderCoupomTest extends TestCase
             'active' => true
         ]);
 
-        $this->assertFalse($coupon->isValid());
+        $this->assertFalse($coupon->isAvailable());
 
         $coupon = $this->create(OrderCoupon::class, [
             'start_at' => now()->subMinute(),
@@ -127,11 +127,11 @@ class OrderCoupomTest extends TestCase
             'active' => true
         ]);
 
-        $this->assertFalse($coupon->isValid());
+        $this->assertFalse($coupon->isAvailable());
     }
 
     /** @test */
-    public function coupon_is_valid()
+    public function coupon_is_avaiable()
     {
         $coupon = $this->create(OrderCoupon::class, [
             'start_at' => now()->subMinute(),
@@ -139,6 +139,6 @@ class OrderCoupomTest extends TestCase
             'active' => true
         ]);
 
-        $this->assertTrue($coupon->isValid());
+        $this->assertTrue($coupon->isAvailable());
     }
 }

@@ -42,6 +42,11 @@ class OrderCoupon extends Model
         'end_at'
     ];
 
+    public function isUnlimited(): bool
+    {
+        return is_null($this->usage_limit);
+    }
+
     public function isCurrency(): bool
     {
         return $this->type === static::CURRENCY;
@@ -52,7 +57,7 @@ class OrderCoupon extends Model
         return $this->type === static::PERCENTAGE;
     }
 
-    public function isValid(): bool
+    public function isAvailable(): bool
     {
         return $this->active and $this->start_at->lte(now()) and $this->end_at->gte(now());
     }
