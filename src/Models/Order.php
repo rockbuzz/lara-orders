@@ -89,15 +89,6 @@ class Order extends Model
         return $this->hasMany(OrderTransaction::class);
     }
 
-    protected function calculateDiscount()
-    {
-        if ($this->coupon->isPercentage()) {
-            return percentage_of($this->coupon->value, $this->total);
-        }
-
-        return $this->coupon->value / 100;
-    }
-
     protected function isValidOrFail(OrderCoupon $coupon)
     {
         throw_unless(
