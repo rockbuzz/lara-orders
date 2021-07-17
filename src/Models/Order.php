@@ -55,19 +55,13 @@ class Order extends Model
 
     public function applyCoupon(OrderCoupon $coupon)
     {
-        if (!$this->couponIsValid($coupon)) {
-            throw new DomainException('Coupon exceeded usage limit');
-        }
-
-        if ($this->items->isEmpty()) {
-            throw new DomainException('Order is empty');
-        }
+        $this->isValidOrFail($coupon);
 
         $this->coupon_id = $coupon->id;
 
         $discount = $this->convertToCents($this->calculateDiscount($this->total));
 
-        if ($this->total < $discount) {
+        if ($this->totalInCents < $discount) {
             throw new DomainException('Discount is greater than total');
         }
         
@@ -79,12 +73,17 @@ class Order extends Model
 
     public function getTotalAttribute()
     {
-        return $this->items->reduce(fn($acc, $item) => $acc += $item->total);
+        return number_format($this->totalInCents / 100, 2, '.', '');
+    }
+
+    public function getTotalInCentsAttribute()
+    {
+        return $this->items->reduce(fn($acc, $item) => $acc += $item->totalInCents);
     }
 
     public function getTotalWithDiscountAttribute()
     {
-        return $this->total - $this->discount;
+        return $this->totalInCents - $this->discount;
     }
 
     public function transactions(): HasMany
@@ -92,10 +91,10 @@ class Order extends Model
         return $this->hasMany(OrderTransaction::class);
     }
 
-    protected function calculateDiscount($total)
+    protected function calculateDiscount()
     {
         if ($this->coupon->isPercentage()) {
-            return percentage($this->coupon->value, $this->deconvertCents($total));
+            return percentage_of($this->coupon->value, $this->total);
         }
 
         return $this->coupon->value / 100;
@@ -106,14 +105,22 @@ class Order extends Model
         return intval($value * 100);
     }
 
-    protected function deconvertCents(int $value)
+    protected function isValidOrFail(OrderCoupon $coupon)
     {
-        return number_format($value / 100, 2, '.', '');
+        throw_unless(
+            $this->couponHasAvailableLimit($coupon), 
+            new DomainException('Coupon exceeded usage limit')
+        );
+
+        throw_if(
+            $this->items->isEmpty(), 
+            new DomainException('Order is empty')
+        );
     }
 
-    private function couponIsValid(OrderCoupon $coupon)
+    protected function discountIsLessThanTotal()
     {
-        return $this->couponHasAvailableLimit($coupon);
+        # code...
     }
 
     private function couponHasAvailableLimit(OrderCoupon $coupon)

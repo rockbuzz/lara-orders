@@ -44,6 +44,11 @@ class OrderItem extends Model
 
     public function getTotalAttribute()
     {
+        return number_format($this->totalInCents / 100, 2, '.', '');
+    }
+
+    public function getTotalInCentsAttribute()
+    {
         return $this->attributes['amount'] * $this->attributes['quantity'];
     }
 }

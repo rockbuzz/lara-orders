@@ -231,7 +231,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'coupon_id' => null,
-            'discount' => 0
+            'discount' => null
         ]);
     }
 
@@ -260,7 +260,7 @@ class OrderTest extends TestCase
 
         $order->applyCoupon($coupon);
 
-        $expected = $order->total - $order->discount;
+        $expected = $order->totalInCents - $order->discount;
 
         $this->assertEquals($expected, $order->totalWithDiscount);
         $this->assertDatabaseHas('orders', [
@@ -291,7 +291,7 @@ class OrderTest extends TestCase
 
         $order->applyCoupon($coupon);
 
-        $expected = $order->total - $order->discount;
+        $expected = $order->totalInCents - $order->discount;
 
         $this->assertEquals($expected, $order->totalWithDiscount);
         $this->assertDatabaseHas('orders', [
