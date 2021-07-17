@@ -59,13 +59,11 @@ class Order extends Model
 
         $this->coupon_id = $coupon->id;
 
-        $discount = $this->convertToCents($this->calculateDiscount($this->total));
+        $discount = $this->calculateDiscount();
 
-        if ($this->totalInCents < $discount) {
-            throw new DomainException('Discount is greater than total');
-        }
+        $this->discountIsLessThanTotalOrFail($discount);
         
-        $this->discount = $discount;
+        $this->discount = $this->convertToCents($discount);
         $this->save();
 
         event(new CouponApplied($this, $coupon));
@@ -82,6 +80,11 @@ class Order extends Model
     }
 
     public function getTotalWithDiscountAttribute()
+    {
+        return number_format($this->totalWithDiscountInCents / 100, 2, '.', '');
+    }
+
+    public function getTotalWithDiscountInCentsAttribute()
     {
         return $this->totalInCents - $this->discount;
     }
@@ -118,9 +121,12 @@ class Order extends Model
         );
     }
 
-    protected function discountIsLessThanTotal()
+    protected function discountIsLessThanTotalOrFail($discount)
     {
-        # code...
+        throw_if(
+            $this->total < $discount, 
+            new DomainException('Discount is greater than total')
+        );
     }
 
     private function couponHasAvailableLimit(OrderCoupon $coupon)

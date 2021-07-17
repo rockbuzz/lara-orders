@@ -57,9 +57,13 @@ $order->applyCoupon(OrderCoupon $coupon);
 
 $order->items(): HasMany;
 
-$order->total;
+$order->total; //98.99
 
-$order->totalWithCoupon;
+$order->totalInCents; //9899
+
+$order->totalWithCoupon; //88.99
+
+$order->totalWithCouponInCents; //8899
 
 $order->transactions(): HasMany;
 ```
