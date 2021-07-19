@@ -4,6 +4,7 @@ namespace Rockbuzz\LaraOrders\Models;
 
 use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Rockbuzz\LaraOrders\Events\OrderItemCreated;
 
 class OrderItem extends Model
 {
@@ -30,6 +31,10 @@ class OrderItem extends Model
         'deleted_at',
         'created_at',
         'updated_at'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => OrderItemCreated::class
     ];
 
     public function buyable()

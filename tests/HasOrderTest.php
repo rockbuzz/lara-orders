@@ -3,11 +3,12 @@
 namespace Tests;
 
 use Ramsey\Uuid\Uuid;
-use Tests\Models\User;
+use Tests\Models\{User, Product};
 use Rockbuzz\LaraOrders\Models\Order;
 use Illuminate\Support\Facades\Event;
-use Rockbuzz\LaraOrders\Events\OrderCreated;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Rockbuzz\LaraOrders\Events\{OrderCreated, OrderItemCreated};
+use Rockbuzz\LaraOrders\Models\OrderItem;
 
 class HasOrderTest extends TestCase
 {
@@ -35,8 +36,6 @@ class HasOrderTest extends TestCase
 
         $order = $buyer->createOrder();
 
-        $this->assertInstanceOf(Order::class, $order);
-
         $this->assertDatabaseHas('orders', [
             'status' => 1,
             'buyer_id' => $buyer->id,
@@ -45,6 +44,50 @@ class HasOrderTest extends TestCase
 
         Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {
             return $e->order->id === $order->id;
+        });
+    }
+
+    /** @test */
+    public function buyer_can_create_order_with_item()
+    {
+        Event::fake([OrderCreated::class, OrderItemCreated::class]);
+
+        $buyer = $this->create(User::class);
+
+        $data = $this->make(OrderItem::class);
+
+        $order = $buyer->createOrder();
+        $item = $order->items()->create([
+            'description' => $data->description,
+            'amount' => $data->amount,
+            'quantity' => $data->quantity,
+            'buyable_id' => $data->buyable_id,
+            'buyable_type' => $data->buyable_type,
+            'options' => $data->options,
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'status' => 1,
+            'buyer_id' => $buyer->id,
+            'buyer_type' => User::class
+        ]);
+
+        $this->assertDatabaseHas('order_items', [
+            'description' => $data->description,
+            'amount' => $data->amount,
+            'quantity' => $data->quantity,
+            'buyable_id' => $data->buyable_id,
+            'buyable_type' => $data->buyable_type,
+            'options' => $data->options,
+            'order_id' => $order->id
+        ]);
+
+        Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {
+            return $e->order->id === $order->id;
+        });
+
+        Event::assertDispatched(OrderItemCreated::class, function ($e) use ($item) {
+            return $e->item->id === $item->id;
         });
     }
 
