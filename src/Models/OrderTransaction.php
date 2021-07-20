@@ -11,12 +11,14 @@ class OrderTransaction extends Model
     use SoftDeletes, Uuid;
 
     protected $fillable = [
+        'type',
         'payload',
         'order_id'
     ];
 
     protected $casts = [
         'id' => 'integer',
+        'type' => 'integer',
         'payload' => 'array'
     ];
 

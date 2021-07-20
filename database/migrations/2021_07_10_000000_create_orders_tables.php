@@ -59,6 +59,7 @@ class CreateOrdersTables extends Migration
         Schema::create('order_transactions', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->smallInteger('type')->default(1);
             $table->json('payload')->nullable();
             $table->foreignId('order_id')->constrained();
             $table->timestamps();

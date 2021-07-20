@@ -36,6 +36,7 @@ class OrderTransactionTest extends TestCase
     public function order_transaction_fillable()
     {
         $expected = [
+            'type',
             'payload',
             'order_id'
         ];
@@ -48,6 +49,7 @@ class OrderTransactionTest extends TestCase
     {
         $expected = [
             'id' => 'integer',
+            'type' => 'integer',
             'payload' => 'array',
             'deleted_at' => 'datetime'
         ];
