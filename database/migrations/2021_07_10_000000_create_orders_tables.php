@@ -14,6 +14,21 @@ class CreateOrdersTables extends Migration
      */
     public function up()
     {
+        Schema::create('order_coupons', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->string('name');
+            $table->smallInteger('type')->default(OrderCoupon::CURRENCY);
+            $table->smallInteger('value')->comment('Value in cents');
+            $table->smallInteger('usage_limit')->nullable();
+            $table->boolean('active')->default(true);
+            $table->json('notes')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
@@ -49,21 +64,6 @@ class CreateOrdersTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Schema::create('order_coupons', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid');
-            $table->string('name');
-            $table->smallInteger('type')->default(OrderCoupon::CURRENCY);
-            $table->smallInteger('value')->comment('Value in cents');
-            $table->smallInteger('usage_limit')->nullable();
-            $table->boolean('active')->default(true);
-            $table->json('notes')->nullable();
-            $table->dateTime('start_at')->nullable();
-            $table->dateTime('end_at')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
     }
 
     /**
@@ -73,9 +73,9 @@ class CreateOrdersTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_coupons');
         Schema::dropIfExists('order_transactions');
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_coupons');
     }
 }
