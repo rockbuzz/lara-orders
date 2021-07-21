@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rockbuzz\LaraOrders\Events\CouponApplied;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Rockbuzz\LaraOrders\Events\OrderTransactionCreated;
 use Rockbuzz\LaraOrders\Models\{OrderItem, Order, OrderCoupon, OrderTransaction};
 
 class OrderTest extends TestCase
@@ -311,5 +312,30 @@ class OrderTest extends TestCase
 
         $this->assertInstanceOf(HasMany::class, $order->transactions());
         $this->assertContains($transaction->id, $order->transactions->pluck('id'));
+    }
+
+    /** @test */
+    public function order_can_have_add_transaction()
+    {
+        Event::fake(OrderTransactionCreated::class);
+
+        $order = $this->create(Order::class);
+
+        $payload = ['any' => 1];
+        $type = 1;
+
+        $transaction = $order->addTransaction($payload, $type);
+
+        $this->assertInstanceOf(OrderTransaction::class, $transaction);
+        
+        $this->assertDatabaseHas('order_transactions', [
+            'order_id' => $order->id,
+            'id' => $transaction->id,
+            'type' => $type
+        ]);
+
+        Event::assertDispatched(OrderTransactionCreated::class, function ($e) use ($transaction) {
+            return $e->transaction->id === $transaction->id;
+        });
     }
 }

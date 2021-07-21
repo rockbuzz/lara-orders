@@ -89,6 +89,14 @@ class Order extends Model
         return $this->hasMany(OrderTransaction::class);
     }
 
+    public function addTransaction(array $payload, int $type)
+    {
+        return $this->transactions()->create([
+            'type' => $type,
+            'payload' => $payload
+        ]);
+    }
+
     protected function isValidOrFail(OrderCoupon $coupon)
     {
         throw_unless(
