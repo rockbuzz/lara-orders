@@ -38,7 +38,7 @@ class OrderItemTest extends TestCase
     {
         $expected = [
             'description',
-            'amount',
+            'amount_in_cents',
             'quantity',
             'options',
             'buyable_id',
@@ -54,7 +54,7 @@ class OrderItemTest extends TestCase
     {
         $expected = [
             'id' => 'integer',
-            'amount' => 'integer',
+            'amount_in_cents' => 'integer',
             'quantity' => 'integer',
             'options' => 'array',
             'deleted_at' => 'datetime'
@@ -110,7 +110,7 @@ class OrderItemTest extends TestCase
             'quantity' => 2
         ]);
 
-        $expected = $orderItem->amount * 2;
+        $expected = $orderItem->amount_in_cents * 2;
 
         $this->assertEquals($expected, $orderItem->totalInCents);
     }

@@ -61,4 +61,12 @@ class OrderCoupon extends Model
     {
         return $this->active and $this->start_at->lte(now()) and $this->end_at->gte(now());
     }
+
+    public function resolveDiscount(float $float): float
+    {
+        if ($this->isPercentage()) {
+            return percentage_of($this->value, $float);
+        }
+        return $this->value / 100;
+    }
 }

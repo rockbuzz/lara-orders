@@ -10,7 +10,7 @@ $factory->define(OrderItem::class, function (Faker $faker) {
     $product = factory(Product::class)->create();
     return [
         'description' => $faker->sentence,
-        'amount' => $faker->numberBetween(1990, 3999),
+        'amount_in_cents' => $faker->numberBetween(1990, 3999),
         'quantity' => $faker->numberBetween(1, 3),
         'options' => null,
         'buyable_id' => $product->id,

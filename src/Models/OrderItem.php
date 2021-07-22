@@ -12,7 +12,7 @@ class OrderItem extends Model
 
     protected $fillable = [
         'description',
-        'amount',
+        'amount_in_cents',
         'quantity',
         'options',
         'buyable_id',
@@ -22,7 +22,7 @@ class OrderItem extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'amount' => 'integer',
+        'amount_in_cents' => 'integer',
         'quantity' => 'integer',
         'options' => 'array'
     ];
@@ -49,11 +49,11 @@ class OrderItem extends Model
 
     public function getTotalAttribute()
     {
-        return number_format($this->totalInCents / 100, 2, '.', '');
+        return format_currency($this->totalInCents);
     }
 
     public function getTotalInCentsAttribute()
     {
-        return $this->attributes['amount'] * $this->attributes['quantity'];
+        return $this->attributes['amount_in_cents'] * $this->attributes['quantity'];
     }
 }

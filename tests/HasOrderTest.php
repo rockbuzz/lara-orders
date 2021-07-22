@@ -3,12 +3,11 @@
 namespace Tests;
 
 use Ramsey\Uuid\Uuid;
-use Tests\Models\{User, Product};
-use Rockbuzz\LaraOrders\Models\Order;
+use Tests\Models\User;
 use Illuminate\Support\Facades\Event;
+use Rockbuzz\LaraOrders\Models\{Order, OrderItem};
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Rockbuzz\LaraOrders\Events\{OrderCreated, OrderItemCreated};
-use Rockbuzz\LaraOrders\Models\OrderItem;
 
 class HasOrderTest extends TestCase
 {
@@ -59,7 +58,7 @@ class HasOrderTest extends TestCase
         $order = $buyer->createOrder();
         $item = $order->items()->create([
             'description' => $data->description,
-            'amount' => $data->amount,
+            'amount_in_cents' => $data->amount_in_cents,
             'quantity' => $data->quantity,
             'buyable_id' => $data->buyable_id,
             'buyable_type' => $data->buyable_type,
@@ -74,7 +73,7 @@ class HasOrderTest extends TestCase
 
         $this->assertDatabaseHas('order_items', [
             'description' => $data->description,
-            'amount' => $data->amount,
+            'amount_in_cents' => $data->amount_in_cents,
             'quantity' => $data->quantity,
             'buyable_id' => $data->buyable_id,
             'buyable_type' => $data->buyable_type,

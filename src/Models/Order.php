@@ -24,14 +24,15 @@ class Order extends Model
     protected $casts = [
         'id' => 'integer',
         'status' => 'integer',
-        'discount' => 'integer',
+        'discount_in_cents' => 'integer',
         'notes' => 'array'
     ];
 
     protected $dates = [
         'deleted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'paid_at'
     ];
 
     protected $dispatchesEvents = [
@@ -55,18 +56,15 @@ class Order extends Model
 
     public function applyCoupon(OrderCoupon $coupon)
     {
-        $this->isValidOrFail($coupon);
-        
-        $this->discount = convert_to_cents(calculate_discount($coupon, $this->total));
-        $this->coupon_id = $coupon->id;
-        $this->save();
+        $this->isValidOrFail($coupon)
+            ->saveDiscount($coupon);
 
         event(new CouponApplied($this, $coupon));
     }
 
     public function getTotalAttribute()
     {
-        return value_format($this->totalInCents);
+        return format_currency($this->totalInCents);
     }
 
     public function getTotalInCentsAttribute()
@@ -76,12 +74,12 @@ class Order extends Model
 
     public function getTotalWithDiscountAttribute()
     {
-        return value_format($this->totalWithDiscountInCents);
+        return format_currency($this->totalWithDiscountInCents);
     }
 
     public function getTotalWithDiscountInCentsAttribute()
     {
-        return $this->totalInCents - $this->discount;
+        return $this->totalInCents - $this->discount_in_cents;
     }
 
     public function transactions(): HasMany
@@ -97,7 +95,7 @@ class Order extends Model
         ]);
     }
 
-    protected function isValidOrFail(OrderCoupon $coupon)
+    protected function isValidOrFail(OrderCoupon $coupon): self
     {
         throw_unless(
             $this->couponHasAvailableLimit($coupon),
@@ -113,6 +111,8 @@ class Order extends Model
             $this->discountIsGreaterThanTotal($coupon),
             new DomainException('Discount is greater than total')
         );
+
+        return $this;
     }
 
     protected function couponHasAvailableLimit(OrderCoupon $coupon)
@@ -123,6 +123,13 @@ class Order extends Model
 
     protected function discountIsGreaterThanTotal($coupon)
     {
-        return calculate_discount($coupon, $this->total) > $this->total;
+        return $coupon->resolveDiscount($this->total) > $this->total;
+    }
+
+    private function saveDiscount(OrderCoupon $coupon)
+    {
+        $this->discount_in_cents = to_pennies($coupon->resolveDiscount($this->total));
+        $this->coupon_id = $coupon->id;
+        $this->save();
     }
 }

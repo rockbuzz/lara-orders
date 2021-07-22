@@ -19,7 +19,7 @@ class CreateOrdersTables extends Migration
             $table->uuid('uuid');
             $table->string('name');
             $table->smallInteger('type')->default(OrderCoupon::CURRENCY);
-            $table->smallInteger('value')->comment('Value in cents');
+            $table->smallInteger('value')->comment('Value must be an integer representing a percentage or cents');
             $table->smallInteger('usage_limit')->nullable();
             $table->boolean('active')->default(true);
             $table->json('notes')->nullable();
@@ -36,7 +36,8 @@ class CreateOrdersTables extends Migration
             $table->json('notes')->nullable();
             $table->morphs('buyer');
             $table->foreignId('coupon_id')->nullable()->constrained();
-            $table->smallInteger('discount')->nullable()->comment('Value in cents');
+            $table->smallInteger('discount_in_cents')->nullable();
+            $table->dateTime('paid_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['buyer_id', 'buyer_type', 'uuid']);
@@ -46,7 +47,7 @@ class CreateOrdersTables extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->string('description');
-            $table->smallInteger('amount')->comment('Value in cents');
+            $table->smallInteger('amount_in_cents');
             $table->smallInteger('quantity')->default(1);
             $table->json('options')->nullable();
             $table->morphs('buyable');

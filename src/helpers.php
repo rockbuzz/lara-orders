@@ -1,35 +1,22 @@
 <?php
 
-use Rockbuzz\LaraOrders\Models\OrderCoupon as Coupon;
-
 if (!function_exists('percentage_of')) {
-    function percentage_of(int $percentage, $value)
+    function percentage_of(int $percentage, float $float)
     {
-        return floatval($value * ($percentage / 100));
+        return (float) $float * ($percentage / 100);
     }
 }
 
-if (!function_exists('value_format')) {
-    function value_format(int $cents)
+if (!function_exists('format_currency')) {
+    function format_currency(int $cents)
     {
-        return number_format($cents / 100, 2, '.', '');
+        return (float) number_format($cents / 100, 2, '.', '');
     }
 }
 
-if (!function_exists('convert_to_cents')) {
-    function convert_to_cents($value)
+if (!function_exists('to_pennies')) {
+    function to_pennies($value)
     {
-        return intval($value * 100);
-    }
-}
-
-if (!function_exists('calculate_discount')) {
-    function calculate_discount(Coupon $coupon, $total)
-    {
-        if ($coupon->isPercentage()) {
-            return percentage_of($coupon->value, $total);
-        }
-
-        return $coupon->value / 100;
+        return (int) (string) (float) preg_replace("/[^0-9.]/", "", $value) * 100;
     }
 }

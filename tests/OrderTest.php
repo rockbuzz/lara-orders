@@ -8,9 +8,8 @@ use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rockbuzz\LaraOrders\Events\CouponApplied;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Rockbuzz\LaraOrders\Events\OrderTransactionCreated;
+use Rockbuzz\LaraOrders\Events\{CouponApplied, OrderTransactionCreated};
 use Rockbuzz\LaraOrders\Models\{OrderItem, Order, OrderCoupon, OrderTransaction};
 
 class OrderTest extends TestCase
@@ -58,7 +57,7 @@ class OrderTest extends TestCase
         $expected = [
             'id' => 'integer',
             'status' => 'integer',
-            'discount' => 'integer',
+            'discount_in_cents' => 'integer',
             'notes' => 'array',
             'deleted_at' => 'datetime'
         ];
@@ -70,7 +69,7 @@ class OrderTest extends TestCase
     public function order_dates()
     {
         $this->assertEquals(
-            array_values(['deleted_at', 'created_at', 'updated_at']),
+            array_values(['deleted_at', 'created_at', 'updated_at', 'paid_at']),
             array_values($this->order->getDates())
         );
     }
@@ -136,7 +135,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'coupon_id' => $coupon->id,
-            'discount' => 1000
+            'discount_in_cents' => 1000
         ]);
 
         Event::assertDispatched(CouponApplied::class, function ($e) use ($order, $coupon) {
@@ -208,7 +207,7 @@ class OrderTest extends TestCase
         $order = $this->create(Order::class);
         $this->create(OrderItem::class, [
             'order_id' => $order->id,
-            'amount' => 10000,
+            'amount_in_cents' => 10000,
             'quantity' => 1
         ]);
 
@@ -232,7 +231,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'coupon_id' => null,
-            'discount' => null
+            'discount_in_cents' => null
         ]);
     }
 
@@ -250,24 +249,24 @@ class OrderTest extends TestCase
 
         $order = $this->create(Order::class, [
             'coupon_id' => $coupon->id,
-            'discount' => 1000
+            'discount_in_cents' => 1000
         ]);
 
         $this->create(OrderItem::class, [
             'order_id' => $order->id,
-            'amount' => 9899,
+            'amount_in_cents' => 9899,
             'quantity' => 1
         ], 2);
 
         $order->applyCoupon($coupon);
 
-        $expected = $order->totalInCents - $order->discount;
+        $expected = $order->totalInCents - $order->discount_in_cents;
 
         $this->assertEquals($expected, $order->totalWithDiscountInCents);
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'coupon_id' => $coupon->id,
-            'discount' => $order->discount
+            'discount_in_cents' => $order->discount_in_cents
         ]);
     }
 
@@ -286,19 +285,19 @@ class OrderTest extends TestCase
         $order = $this->create(Order::class);
         $this->create(OrderItem::class, [
             'order_id' => $order->id,
-            'amount' => 9899,
+            'amount_in_cents' => 9899,
             'quantity' => 1
         ], 2);
 
         $order->applyCoupon($coupon);
 
-        $expected = $order->totalInCents - $order->discount;
+        $expected = $order->totalInCents - $order->discount_in_cents;
 
         $this->assertEquals($expected, $order->totalWithDiscountInCents);
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'coupon_id' => $coupon->id,
-            'discount' => $order->discount
+            'discount_in_cents' => $order->discount_in_cents
         ]);
     }
 
