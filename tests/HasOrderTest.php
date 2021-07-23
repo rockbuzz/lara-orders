@@ -33,12 +33,13 @@ class HasOrderTest extends TestCase
 
         $buyer = $this->create(User::class);
 
-        $order = $buyer->createOrder();
+        $order = $buyer->createOrder(['notes' => ['foo' => 'bar']]);
 
         $this->assertDatabaseHas('orders', [
             'status' => 1,
             'buyer_id' => $buyer->id,
-            'buyer_type' => User::class
+            'buyer_type' => User::class,
+            'notes' => json_encode(['foo' => 'bar'])
         ]);
 
         Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {

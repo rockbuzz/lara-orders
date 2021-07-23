@@ -41,7 +41,7 @@ class YourBuyer
 ```php
 $buyer->orders(): MorphMany;
 
-$buyer->createOrder(): Order;
+$buyer->createOrder(array $notes = []): Order;
 
 $buyer->orderById(int $id): ?Order;
 

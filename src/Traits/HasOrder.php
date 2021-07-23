@@ -14,9 +14,9 @@ trait HasOrder
         return $this->morphMany(Order::class, 'buyer');
     }
 
-    public function createOrder(): Order
+    public function createOrder(array $notes = []): Order
     {
-        return $this->orders()->create();
+        return $this->orders()->create($notes);
     }
 
     public function orderById(int $id): ?Order
