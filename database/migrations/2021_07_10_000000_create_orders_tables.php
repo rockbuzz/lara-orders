@@ -37,7 +37,7 @@ class CreateOrdersTables extends Migration
             $table->smallInteger('driver')->nullable();
             $table->json('notes')->nullable();
             $table->morphs('buyer');
-            $table->foreignId('coupon_id')->nullable()->constrained();
+            $table->foreignId('coupon_id')->nullable()->constrained('order_coupons');
             $table->smallInteger('discount_in_cents')->nullable();
             $table->dateTime('paid_at')->nullable();
             $table->timestamps();
