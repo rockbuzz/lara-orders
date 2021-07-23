@@ -15,8 +15,8 @@ if (!function_exists('format_currency')) {
 }
 
 if (!function_exists('to_pennies')) {
-    function to_pennies($value)
+    function to_pennies(float $float)
     {
-        return (int) (string) (float) preg_replace("/[^0-9.]/", "", $value) * 100;
+        return (int) $float * 100;
     }
 }
