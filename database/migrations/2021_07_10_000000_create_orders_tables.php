@@ -33,6 +33,8 @@ class CreateOrdersTables extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->smallInteger('status')->default(1);
+            $table->smallInteger('payment_method')->nullable();
+            $table->smallInteger('driver')->nullable();
             $table->json('notes')->nullable();
             $table->morphs('buyer');
             $table->foreignId('coupon_id')->nullable()->constrained();

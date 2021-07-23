@@ -43,6 +43,8 @@ class OrderTest extends TestCase
         $expected = [
             'uuid',
             'status',
+            'payment_method',
+            'driver',
             'notes',
             'buyer_id',
             'buyer_type'

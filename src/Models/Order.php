@@ -16,6 +16,8 @@ class Order extends Model
     protected $fillable = [
         'uuid',
         'status',
+        'payment_method',
+        'driver',
         'notes',
         'buyer_id',
         'buyer_type'
@@ -38,7 +40,7 @@ class Order extends Model
     protected $dispatchesEvents = [
         'created' => OrderCreated::class
     ];
-    
+
     public function buyer(): BelongsTo
     {
         return $this->belongsTo(config('orders.models.buyer'));
@@ -106,7 +108,7 @@ class Order extends Model
             $this->items->isEmpty(),
             new DomainException('Order is empty')
         );
-        
+
         throw_if(
             $this->discountIsGreaterThanTotal($coupon),
             new DomainException('Discount is greater than total')
