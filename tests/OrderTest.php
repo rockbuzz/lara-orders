@@ -193,6 +193,32 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function must_return_an_exception_when_order_total_is_zero()
+    {
+        $coupon = $this->create(
+            OrderCoupon::class,
+            [
+                'start_at' => now()->subMinute(),
+                'end_at' => now()->addMinute(),
+                'active' => true,
+                'usage_limit' => null,
+                'type' => OrderCoupon::CURRENCY,
+                'value' => 1000
+            ]
+        );
+        $order = $this->create(Order::class);
+        $this->create(OrderItem::class, [
+            'order_id' => $order->id,
+            'amount_in_cents' => 0
+        ]);
+
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Order total is zero');
+
+        $order->applyCoupon($coupon);
+    }
+
+    /** @test */
     public function must_return_an_exception_when_discount_is_greater_than_total()
     {
         $coupon = $this->create(

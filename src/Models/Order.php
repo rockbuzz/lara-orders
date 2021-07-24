@@ -110,6 +110,11 @@ class Order extends Model
         );
 
         throw_if(
+            $this->items->isNotEmpty() && $this->total <= 0,
+            new DomainException('Order total is zero')
+        );
+
+        throw_if(
             $this->discountIsGreaterThanTotal($coupon),
             new DomainException('Discount is greater than total')
         );
