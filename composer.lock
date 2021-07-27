@@ -4,8 +4,69 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9dab460da03d8288a6d548caacd90a8",
-    "packages": [],
+    "content-hash": "7041c7e80af24e3ded9020a27313a9fe",
+    "packages": [
+        {
+            "name": "rockbuzz/lara-utils",
+            "version": "0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rockbuzz/lara-utils.git",
+                "reference": "783c8da465203b4cf54ad24679cd8c5229ed0821"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rockbuzz/lara-utils/zipball/783c8da465203b4cf54ad24679cd8c5229ed0821",
+                "reference": "783c8da465203b4cf54ad24679cd8c5229ed0821",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0.4",
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.0",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rockbuzz\\LaraUtils\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rockbuzz\\LaraUtils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tiago Lopes",
+                    "email": "tiago@rockbuzz.com.br"
+                },
+                {
+                    "name": "Paulo Henrique",
+                    "email": "paulo@rockbuzz.com.br"
+                }
+            ],
+            "description": "Lara Utils",
+            "keywords": [
+                "utils"
+            ],
+            "support": {
+                "issues": "https://github.com/rockbuzz/lara-utils/issues",
+                "source": "https://github.com/rockbuzz/lara-utils/tree/0.1.2"
+            },
+            "time": "2021-07-11T16:38:01+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "brick/math",

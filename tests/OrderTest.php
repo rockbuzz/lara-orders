@@ -7,6 +7,8 @@ use Tests\Models\User;
 use Rockbuzz\LaraOrders\Traits\Uuid;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
+use Rockbuzz\LaraUtils\Casts\Schemaless;
+use Rockbuzz\LaraOrders\Schemaless\Notes;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 use Rockbuzz\LaraOrders\Events\{CouponApplied, OrderTransactionCreated};
@@ -60,7 +62,7 @@ class OrderTest extends TestCase
             'id' => 'integer',
             'status' => 'integer',
             'discount_in_cents' => 'integer',
-            'notes' => 'array',
+            'notes' => Schemaless::class . ':' . Notes::class,
             'deleted_at' => 'datetime'
         ];
 

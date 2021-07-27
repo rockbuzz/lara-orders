@@ -3,11 +3,13 @@
 namespace Rockbuzz\LaraOrders\Models;
 
 use DomainException;
+use Rockbuzz\LaraOrders\Schemaless\Notes;
 use Rockbuzz\LaraOrders\Traits\Uuid;
 use Rockbuzz\LaraOrders\Events\OrderCreated;
 use Rockbuzz\LaraOrders\Events\CouponApplied;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Rockbuzz\LaraUtils\Casts\Schemaless;
 
 class Order extends Model
 {
@@ -27,7 +29,7 @@ class Order extends Model
         'id' => 'integer',
         'status' => 'integer',
         'discount_in_cents' => 'integer',
-        'notes' => 'array'
+        'notes' => Schemaless::class . ':' . Notes::class
     ];
 
     protected $dates = [
