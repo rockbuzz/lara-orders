@@ -11,5 +11,4 @@ class Notes extends Base
     {
         return collect();
     }
-
 }
