@@ -86,6 +86,11 @@ class Order extends Model
         return $this->totalInCents - $this->discount_in_cents;
     }
 
+    public function isWorthless(): bool
+    {
+        return $this->totalInCents <= 0;
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(OrderTransaction::class);

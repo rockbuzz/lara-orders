@@ -104,6 +104,23 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function order_has_is_worthless()
+    {
+        $order = $this->create(Order::class);
+        $item = $this->create(OrderItem::class, [
+            'order_id' => $order->id
+        ]);
+
+        $this->assertFalse($order->isWorthless());
+
+        $item->update(['amount_in_cents' => 0]);
+
+        $order->refresh();
+
+        $this->assertTrue($order->isWorthless());
+    }
+
+    /** @test */
     public function order_can_have_coupon()
     {
         $coupon = $this->create(OrderCoupon::class);
