@@ -104,6 +104,11 @@ class Order extends Model
         ]);
     }
 
+    public function needAPaymentMethod(): bool
+    {
+        return !$this->isWorthless() && is_null($this->payment_method);
+    }
+
     protected function isValidOrFail(OrderCoupon $coupon): self
     {
         throw_unless(

@@ -384,4 +384,29 @@ class OrderTest extends TestCase
             return $e->transaction->id === $transaction->id;
         });
     }
+
+    /** @test */
+    public function order_can_need_a_payment_method()
+    {
+        $order = $this->create(Order::class, [
+            'payment_method' => 'any'
+        ]);
+
+        $this->assertFalse($order->needAPaymentMethod());
+
+        $order->update(['payment_method' => null]);
+
+        $this->assertFalse($order->needAPaymentMethod());
+
+        $order->items()->create([
+            'description' => 'Any Desc',
+            'amount_in_cents' => 100,
+            'buyable_id' => 1,
+            'buyable_type' => Event::class
+        ]);
+
+        $order->refresh();
+
+        $this->assertTrue($order->needAPaymentMethod());
+    }
 }
