@@ -113,6 +113,11 @@ class Order extends Model
         return $this->totalInCents - $this->discount_in_cents;
     }
 
+    public function isWorthless(): bool
+    {
+        return $this->totalInCents <= 0;
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(OrderTransaction::class);
@@ -124,6 +129,11 @@ class Order extends Model
             'type' => $type,
             'payload' => $payload
         ]);
+    }
+
+    public function needAPaymentMethod(): bool
+    {
+        return !$this->isWorthless() && is_null($this->payment_method);
     }
 
     protected function isValidOrFail(OrderCoupon $coupon): self

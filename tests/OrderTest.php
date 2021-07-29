@@ -105,6 +105,23 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function order_has_is_worthless()
+    {
+        $order = $this->create(Order::class);
+        $item = $this->create(OrderItem::class, [
+            'order_id' => $order->id
+        ]);
+
+        $this->assertFalse($order->isWorthless());
+
+        $item->update(['amount_in_cents' => 0]);
+
+        $order->refresh();
+
+        $this->assertTrue($order->isWorthless());
+    }
+
+    /** @test */
     public function order_can_have_coupon()
     {
         $coupon = $this->create(OrderCoupon::class);
@@ -367,5 +384,30 @@ class OrderTest extends TestCase
         Event::assertDispatched(OrderTransactionCreated::class, function ($e) use ($transaction) {
             return $e->transaction->id === $transaction->id;
         });
+    }
+
+    /** @test */
+    public function order_can_need_a_payment_method()
+    {
+        $order = $this->create(Order::class, [
+            'payment_method' => 'any'
+        ]);
+
+        $this->assertFalse($order->needAPaymentMethod());
+
+        $order->update(['payment_method' => null]);
+
+        $this->assertFalse($order->needAPaymentMethod());
+
+        $order->items()->create([
+            'description' => 'Any Desc',
+            'amount_in_cents' => 100,
+            'buyable_id' => 1,
+            'buyable_type' => Event::class
+        ]);
+
+        $order->refresh();
+
+        $this->assertTrue($order->needAPaymentMethod());
     }
 }
