@@ -6,9 +6,9 @@ use Rockbuzz\LaraOrders\Traits\Uuid;
 use Rockbuzz\LaraOrders\Models\OrderCoupon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderCoupomTest extends TestCase
+class OrderCouponTest extends TestCase
 {
-    protected $orderCoupon;
+    protected OrderCoupon $orderCoupon;
 
     public function setUp(): void
     {
@@ -50,15 +50,13 @@ class OrderCoupomTest extends TestCase
     }
 
     /** @test */
-    public function order_item_casts()
+    public function order_coupon_casts()
     {
         $expected = [
             'id' => 'integer',
             'type' => 'integer',
             'active' => 'boolean',
             'notes' => 'array',
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
             'deleted_at' => 'datetime'
         ];
 

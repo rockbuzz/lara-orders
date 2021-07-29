@@ -2,15 +2,33 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Rockbuzz\LaraOrders\Traits\Uuid;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\{Model, Relations\HasMany, SoftDeletes};
 
+/**
+ * @property integer $id
+ * @property string $uuid
+ * @property string $name,
+ * @property integer $type
+ * @property integer $value
+ * @property integer|null $usage_limit
+ * @property boolean $active
+ * @property array|null $notes
+ * @property Collection $orders
+ * @property Carbon|null $start_at
+ * @property Carbon|null $end_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at
+ */
 class OrderCoupon extends Model
 {
     use SoftDeletes, Uuid;
 
-    const CURRENCY = 1;
-    const PERCENTAGE = 2;
+    public const CURRENCY = 1;
+    public const PERCENTAGE = 2;
 
     protected $fillable = [
         'uuid',
@@ -28,10 +46,7 @@ class OrderCoupon extends Model
         'id' => 'integer',
         'type' => 'integer',
         'active' => 'boolean',
-        'notes' => 'array',
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-        'deleted_at' => 'datetime'
+        'notes' => 'array'
     ];
 
     protected $dates = [
@@ -41,6 +56,11 @@ class OrderCoupon extends Model
         'start_at',
         'end_at'
     ];
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 
     public function isUnlimited(): bool
     {
@@ -67,6 +87,7 @@ class OrderCoupon extends Model
         if ($this->isPercentage()) {
             return percentage_of($this->value, $float);
         }
+
         return $this->value / 100;
     }
 }

@@ -2,10 +2,26 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Carbon\Carbon;
 use Rockbuzz\LaraOrders\Traits\Uuid;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Rockbuzz\LaraOrders\Events\OrderItemCreated;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
+/**
+ * @property integer $id
+ * @property string $uuid
+ * @property string $description,
+ * @property integer $amount_in_cents
+ * @property integer $quantity
+ * @property array|null $options
+ * @property integer $buyable_id
+ * @property string $buyable_type
+ * @property integer $order_id
+ * @property Order $order
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at
+ */
 class OrderItem extends Model
 {
     use SoftDeletes, Uuid;

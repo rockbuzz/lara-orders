@@ -2,15 +2,41 @@
 
 namespace Rockbuzz\LaraOrders\Models;
 
+use Carbon\Carbon;
 use DomainException;
-use Rockbuzz\LaraOrders\Schemaless\Notes;
+use Illuminate\Support\Collection;
 use Rockbuzz\LaraOrders\Traits\Uuid;
+use Rockbuzz\LaraUtils\Casts\Schemaless;
+use Rockbuzz\LaraOrders\Schemaless\Notes;
 use Rockbuzz\LaraOrders\Events\OrderCreated;
 use Rockbuzz\LaraOrders\Events\CouponApplied;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Rockbuzz\LaraUtils\Casts\Schemaless;
 
+/**
+ * @property integer $id
+ * @property string $uuid
+ * @property integer $coupon_id
+ * @property integer $status,
+ * @property integer $payment_method
+ * @property string $driver
+ * @property integer $discount_in_cents
+ * @property Notes $notes
+ * @property float $total
+ * @property integer $total_in_cents
+ * @property float $total_with_discount
+ * @property integer $total_with_discount_in_cents
+ * @property integer $buyer_id
+ * @property string $buyer_type
+ * @property Carbon|null $paid_at
+ * @property Carbon|null $due_date
+ * @property Collection $items
+ * @property Collection $transactions
+ * @property OrderCoupon|null $coupon
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at
+ */
 class Order extends Model
 {
     use SoftDeletes, Uuid;
@@ -22,7 +48,8 @@ class Order extends Model
         'driver',
         'notes',
         'buyer_id',
-        'buyer_type'
+        'buyer_type',
+        'due_date'
     ];
 
     protected $casts = [

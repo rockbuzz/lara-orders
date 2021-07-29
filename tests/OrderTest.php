@@ -49,7 +49,8 @@ class OrderTest extends TestCase
             'driver',
             'notes',
             'buyer_id',
-            'buyer_type'
+            'buyer_type',
+            'due_date'
         ];
 
         $this->assertEquals($expected, $this->order->getFillable());
@@ -77,7 +78,7 @@ class OrderTest extends TestCase
             array_values($this->order->getDates())
         );
     }
-    
+
     /** @test */
     public function order_has_buyer()
     {
@@ -356,7 +357,7 @@ class OrderTest extends TestCase
         $transaction = $order->addTransaction($payload, $type);
 
         $this->assertInstanceOf(OrderTransaction::class, $transaction);
-        
+
         $this->assertDatabaseHas('order_transactions', [
             'order_id' => $order->id,
             'id' => $transaction->id,
