@@ -63,7 +63,8 @@ class Order extends Model
         'deleted_at',
         'created_at',
         'updated_at',
-        'paid_at'
+        'paid_at',
+        'due_date'
     ];
 
     protected $dispatchesEvents = [

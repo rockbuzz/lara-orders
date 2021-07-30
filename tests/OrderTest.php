@@ -74,7 +74,7 @@ class OrderTest extends TestCase
     public function order_dates()
     {
         $this->assertEquals(
-            array_values(['deleted_at', 'created_at', 'updated_at', 'paid_at']),
+            array_values(['deleted_at', 'created_at', 'updated_at', 'paid_at', 'due_date']),
             array_values($this->order->getDates())
         );
     }
