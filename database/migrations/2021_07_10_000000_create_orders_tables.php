@@ -39,7 +39,7 @@ class CreateOrdersTables extends Migration
             $table->morphs('buyer');
             $table->foreignId('coupon_id')->nullable()->constrained('order_coupons');
             $table->unsignedInteger('discount_in_cents')->nullable();
-            $table->dateTime('due_date')->nullable();
+            $table->date('due_date')->nullable();
             $table->dateTime('paid_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
