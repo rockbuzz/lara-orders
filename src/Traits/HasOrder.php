@@ -11,7 +11,7 @@ trait HasOrder
 {
     public function orders(): MorphMany
     {
-        return $this->morphMany(Order::class, 'buyer');
+        return $this->morphMany(config('orders.models.order'), 'buyer');
     }
 
     public function createOrder(array $attributes = []): Order

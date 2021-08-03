@@ -59,7 +59,7 @@ class OrderCoupon extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(config('orders.models.order'));
     }
 
     public function isUnlimited(): bool

@@ -60,7 +60,7 @@ class OrderItem extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(config('orders.models.order'));
     }
 
     public function getTotalAttribute()
